@@ -5,7 +5,7 @@
     android:id="@+id/registry_app_bar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/holo_orange_dark"
+    android:background="@color/colorPrimary"
     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" >
 
 </androidx.appcompat.widget.Toolbar>

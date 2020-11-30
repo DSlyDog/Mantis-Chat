@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">@android:color/holo_orange_dark</color>
-    <color name="colorPrimaryDark">@android:color/holo_orange_dark</color>
-    <color name="colorAccent">@android:color/holo_orange_dark</color>
+    <color name="colorPrimary">#8CC331</color>
+    <color name="colorPrimaryDark">#8CC331</color>
+    <color name="colorAccent">#8CC331</color>
     <color name="tile_color">#ffffff</color>
 </resources>

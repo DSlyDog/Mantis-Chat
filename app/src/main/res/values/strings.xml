@@ -41,4 +41,5 @@
     <string name="declineFriendRequestBtn">Decline Friend Request</string>
     <string name="channelName">main</string>
     <string name="channelDescription">Main notification stream</string>
+    <string name="messageBox">Message</string>
 </resources>
