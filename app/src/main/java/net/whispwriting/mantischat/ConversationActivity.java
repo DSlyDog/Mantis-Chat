@@ -13,7 +13,7 @@ public class ConversationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation);
-        Toolbar convToolbar = findViewById(R.id.chat_toolbar);
+        Toolbar convToolbar = findViewById(R.id.conversation_bar);
         setSupportActionBar(convToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
