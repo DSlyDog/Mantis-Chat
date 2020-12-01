@@ -125,7 +125,7 @@ public class GoogleAd extends AppCompatActivity {
         // mInterstitialAd = newInterstitialAd();
         // loadInterstitial();
 
-        Intent intent = new Intent( this, MantisChat.class );
+        Intent intent = new Intent( this, LoggingIn.class );
         startActivity( intent );
 
     }
