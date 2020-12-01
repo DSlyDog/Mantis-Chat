@@ -43,6 +43,7 @@ public class ConversationActivity extends AppCompatActivity {
         setSupportActionBar(convToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+<<<<<<< HEAD
         profileIcon = (CircleImageView) findViewById(R.id.profile_image_conv);
         sendMessageButton = (FloatingActionButton) findViewById(R.id.sendMessage);
         messageBox = (EditText) findViewById(R.id.message);
@@ -93,5 +94,10 @@ public class ConversationActivity extends AppCompatActivity {
                 }
             });
         }
+=======
+        user = getIntent().getStringExtra("userID");
+
+        // conversations are saved, updated when there is a change
+>>>>>>> fa82f54a62cb8ff9b8a1cc2b5367bce2269484a4
     }
 }
