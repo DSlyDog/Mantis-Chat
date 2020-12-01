@@ -31,6 +31,12 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+// AccountSettings should be a mainactivity with an XML
+// Chat page is a home page
+// include in the README.md we have to
+// conversation and chat page
+// ConversionActivity lisy of chats in chat class
+
 public class ProfileActivity extends AppCompatActivity {
 
     private TextView displayName;
@@ -140,6 +146,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view){
                 sendFriendRequest.setEnabled(false);
+                // Current states determines if a friend request s gets sent 0 is hasn't been sent
                 if (currentState == 0){
                     Map<String, Object> friendRequests = new HashMap<>();
                     Map<String, Object> selfFriendRequests = new HashMap<>();
@@ -165,6 +172,7 @@ public class ProfileActivity extends AppCompatActivity {
                             }
                         }
                     });
+                    // 1 is has been sent
                 }else if (currentState == 1){
                     HashMap<String, String> notificationData = new HashMap<>();
                     notificationData.put("from", null);
@@ -200,6 +208,7 @@ public class ProfileActivity extends AppCompatActivity {
                             }
                         }
                     });
+                    // 2 a friend request has been received
                 }else if (currentState == 2){
                     final CollectionReference userRef = firestore.collection("Friend_Requests");
                     Map<String, Object> requestMap = new HashMap();
@@ -282,6 +291,7 @@ public class ProfileActivity extends AppCompatActivity {
                             }
                         }
                     });
+                    // users already friends
                 }else if (currentState == 3){
                     final CollectionReference userRef = firestore.collection("Users");
 
