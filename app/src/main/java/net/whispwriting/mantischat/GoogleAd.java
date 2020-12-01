@@ -15,7 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-//import com.google.android.gms.ads.InterstitialAd;
 
 import android.widget.Toast;
 
@@ -33,7 +32,7 @@ public class GoogleAd extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_second);
 
         // Create the next level button, which tries to show an interstitial when clicked.
         mNextLevelButton = ((Button) findViewById(R.id.next_level_button));
@@ -126,7 +125,7 @@ public class GoogleAd extends AppCompatActivity {
         // mInterstitialAd = newInterstitialAd();
         // loadInterstitial();
 
-        Intent intent = new Intent( this, SecondActivity.class );
+        Intent intent = new Intent( this, MantisChat.class );
         startActivity( intent );
 
     }

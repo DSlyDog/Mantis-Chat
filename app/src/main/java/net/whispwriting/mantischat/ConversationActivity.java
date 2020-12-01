@@ -18,5 +18,7 @@ public class ConversationActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         user = getIntent().getStringExtra("userID");
+
+        // conversations are saved, updated when there is a change
     }
 }
