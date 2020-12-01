@@ -8,6 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -23,12 +30,6 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class FriendsList extends AppCompatActivity {
@@ -104,9 +105,11 @@ public class FriendsList extends AppCompatActivity {
                                                             profilePage.putExtra("userID", userID);
                                                             startActivity(profilePage);
                                                         }else if (i == 1){
-                                                            Intent chatIntent = new Intent(FriendsList.this, ConversationActivity.class);
-                                                            chatIntent.putExtra("userID", userID);
-                                                            startActivity(chatIntent);
+                                                            Intent conversationIntent = new Intent(FriendsList.this, ConversationActivity.class);
+                                                            conversationIntent.putExtra("userID", userID);
+                                                            conversationIntent.putExtra("name", users.name);
+                                                            conversationIntent.putExtra("image", users.image);
+                                                            startActivity(conversationIntent);
                                                         }
                                                     }
                                                 });

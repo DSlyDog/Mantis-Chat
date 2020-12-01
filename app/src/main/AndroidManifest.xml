@@ -86,7 +86,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="net.whispwriting.mantischat.registration"
+            android:name="net.whispwriting.mantischat.Registration"
             android:label="Create Account"
             android:parentActivityName="net.whispwriting.mantischat.login"
             android:theme="@style/AppTheme.NoActionBar">
