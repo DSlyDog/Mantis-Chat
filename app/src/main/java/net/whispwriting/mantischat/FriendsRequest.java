@@ -44,6 +44,7 @@ public class FriendsRequest extends AppCompatActivity {
         userListImg = (CircleImageView) findViewById(R.id.userListImg);
     }
 
+
     @Override
     protected void onStart() {
         super.onStart();
