@@ -148,14 +148,6 @@ public class ProfileActivity extends AppCompatActivity {
                 sendFriendRequest.setEnabled(false);
                 // Current states determines if a friend request s gets sent 0 is hasn't been sent
                 if (currentState == 0){
-                    Map<String, Object> friendRequests = new HashMap<>();
-                    Map<String, Object> selfFriendRequests = new HashMap<>();
-                    selfFriendRequests.put(uid + "request_type", "sent");
-                    friendRequests.put(currentUser.getUid() + "request_type", "received");
-                    CollectionReference friendRequestCollection = firestore.collection("Friend_Requests");
-                    friendRequestCollection.document(currentUser.getUid()).set(selfFriendRequests, SetOptions.merge());
-                    friendRequestCollection.document(uid).set(friendRequests, SetOptions.merge());
-
                     final DocumentReference currentUserRef = firestore.collection("Friend_Requests").document(currentUser.getUid());
                     final DocumentReference otherUser = firestore.collection("Friend_Requests").document(uid);
 
