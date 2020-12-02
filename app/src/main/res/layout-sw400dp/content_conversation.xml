@@ -62,7 +62,7 @@
 
         <EditText
             android:id="@+id/message"
-            android:minWidth="100dp"
+            android:minWidth="220dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="@string/messageBox"
@@ -89,8 +89,8 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="720dp"
+        android:layout_width="320dp"
+        android:layout_height="399dp"
         app:layout_constraintBottom_toTopOf="@+id/view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

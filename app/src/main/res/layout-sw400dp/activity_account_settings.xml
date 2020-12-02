@@ -7,14 +7,14 @@
     android:background="@color/colorPrimary">
 
     <include layout="@layout/app_bar_layout"
-        android:id="@+id/profileToolbar">
+        android:id="@+id/settingsToolbar">
 
     </include>
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profile_image_other"
-        android:layout_width="140dp"
-        android:layout_height="140dp"
+        android:id="@+id/profile_image"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="46dp"
         android:layout_marginEnd="8dp"
@@ -25,21 +25,21 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/DisplayNameText_other"
+        android:id="@+id/DisplayNameText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="8dp"
         android:text="@string/dispname"
         android:textColor="@color/common_google_signin_btn_text_dark_default"
         android:textSize="36sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profile_image_other" />
+        app:layout_constraintTop_toBottomOf="@+id/profile_image" />
 
     <TextView
-        android:id="@+id/statusText_other"
+        android:id="@+id/statusText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -50,35 +50,51 @@
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/DisplayNameText_other" />
+        app:layout_constraintTop_toBottomOf="@+id/DisplayNameText" />
 
     <Button
-        android:id="@+id/friendRequest"
+        android:id="@+id/imgButton"
         android:layout_width="200dp"
         android:layout_height="50dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="40dp"
         android:layout_marginEnd="8dp"
         android:background="@android:color/white"
-        android:text="@string/friendRequestButton"
+        android:text="@string/changeImg"
         android:textColor="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.507"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/statusText_other" />
+        app:layout_constraintTop_toBottomOf="@+id/statusText" />
 
     <Button
-        android:id="@+id/declineFriendRequest"
+        android:id="@+id/nameButton"
         android:layout_width="200dp"
         android:layout_height="50dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="8dp"
         android:background="@android:color/white"
-        android:text="@string/declineFriendRequestBtn"
+        android:text="@string/changeN"
         android:textColor="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.506"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/friendRequest" />
+        app:layout_constraintTop_toBottomOf="@+id/imgButton" />
 
+    <Button
+        android:id="@+id/statusButton"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="8dp"
+        android:background="@android:color/white"
+        android:text="@string/changeStatus"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.507"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nameButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

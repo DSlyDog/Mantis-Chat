@@ -1,22 +1,18 @@
 package net.whispwriting.mantischat;
 
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
-
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 
 public class GoogleAd extends AppCompatActivity {
     // Remove the below line after defining your own ad unit ID.
@@ -35,7 +31,7 @@ public class GoogleAd extends AppCompatActivity {
         setContentView(R.layout.activity_second);
 
         // Create the next level button, which tries to show an interstitial when clicked.
-        mNextLevelButton = ((Button) findViewById(R.id.next_level_button));
+        //mNextLevelButton = ((Button) findViewById(R.id.next_level_button));
         mNextLevelButton.setEnabled(false);
         mNextLevelButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,7 +41,7 @@ public class GoogleAd extends AppCompatActivity {
         });
 
         // Create the text view to show the level number.
-        mLevelTextView = (TextView) findViewById(R.id.level);
+        //mLevelTextView = (TextView) findViewById(R.id.level);
         mLevel = START_LEVEL;
 
         // Create the InterstitialAd and set the adUnitId (defined in values/strings.xml).
@@ -79,7 +75,7 @@ public class GoogleAd extends AppCompatActivity {
     */
     private InterstitialAd newInterstitialAd() {
         InterstitialAd interstitialAd = new InterstitialAd(this);
-        interstitialAd.setAdUnitId(getString(R.string.interstitial_ad_unit_id));
+        //interstitialAd.setAdUnitId(getString(R.string.interstitial_ad_unit_id));
         interstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdLoaded() {

@@ -4,14 +4,19 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,6 +24,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -32,7 +38,7 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class FriendsList extends AppCompatActivity {
+public class FriendsList extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     private RecyclerView usersListPage;
     private FirebaseFirestore usersDatabase;
@@ -44,21 +50,29 @@ public class FriendsList extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_list);
+        setContentView(R.layout.activity_friends);
 
-        Toolbar usersToolbar = findViewById(R.id.UserListToolbar);
+        Toolbar usersToolbar = findViewById(R.id.FriendListToolbar);
         setSupportActionBar(usersToolbar);
-        getSupportActionBar().setTitle("Friends List");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Friends");
 
         usersDatabase = FirebaseFirestore.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
-        usersListPage = (RecyclerView) findViewById(R.id.UserListPage);
+        usersListPage = (RecyclerView) findViewById(R.id.FriendListPage);
         usersListPage.setHasFixedSize(true);
         usersListPage.setLayoutManager(new LinearLayoutManager(this));
         userListImg = (CircleImageView) findViewById(R.id.userListImg);
 
         query = usersDatabase.collection("Users");
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, usersToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
     }
 
     @Override
@@ -128,6 +142,73 @@ public class FriendsList extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        try {
+            if (drawer.isDrawerOpen(GravityCompat.START)) {
+                drawer.closeDrawer(GravityCompat.START);
+            } else {
+                super.onBackPressed();
+            }
+        }
+        catch (Exception e){
+            //startActivity(lastIntent);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.chat, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+
+        if (item.getItemId() == R.id.action_logout){
+            FirebaseAuth.getInstance().signOut();
+            Intent loginSplash = new Intent(this, login.class);
+            startActivity(loginSplash);
+        }
+        if (item.getItemId() == R.id.action_accounts){
+            Intent accountSettings = new Intent(this, AccountSettings.class);
+            startActivity(accountSettings);
+        }
+        if (item.getItemId() == R.id.action_usersList){
+            Intent userList = new Intent(this, UserList.class);
+            startActivity(userList);
+        }
+
+        return true;
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_chat) {
+            Intent intent = new Intent (this, Chat.class);
+            startActivity(intent);
+        }
+        if (id == R.id.nav_friends){
+            startActivity(new Intent(this, FriendsList.class));
+        }
+        if (id == R.id.nav_search_users){
+            startActivity(new Intent(this, UserList.class));
+        }
+        if (id == R.id.nav_account_settings){
+            startActivity(new Intent(this, AccountSettings.class));
+        }
+
+        return true;
+    }
+
     public static class UsersViewHolder extends RecyclerView.ViewHolder{
 
         View mView;
