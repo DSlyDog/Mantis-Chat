@@ -1,22 +1,18 @@
 package net.whispwriting.mantischat;
 
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
-
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 
 public class GoogleAd extends AppCompatActivity {
     // Remove the below line after defining your own ad unit ID.
@@ -56,7 +52,7 @@ public class GoogleAd extends AppCompatActivity {
         Toast.makeText(this, TOAST_TEXT, Toast.LENGTH_LONG).show();
     }
 
-        @Override
+        /*@Override
         public boolean onCreateOptionsMenu(Menu menu) {
             // Inflate the menu; this adds items to the action bar if it is present.
             getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -75,7 +71,7 @@ public class GoogleAd extends AppCompatActivity {
             }
 
             return super.onOptionsItemSelected(item);
-        }
+        }*/
 
     private InterstitialAd newInterstitialAd() {
         InterstitialAd interstitialAd = new InterstitialAd(this);
