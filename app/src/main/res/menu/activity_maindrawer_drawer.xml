@@ -17,27 +17,11 @@
             android:layout_width="wrap_content"
             android:title="Friend Requests" />
         <item
-            android:id="@+id/nav_home"
+            android:id="@+id/nav_search_users"
             android:title="Search Users" />
         <item
-            android:id="@+id/nav_literature"
-            android:title="Search Groups" />
-        <item
-            android:id="@+id/nav_drawings"
+            android:id="@+id/nav_account_settings"
             android:title="Account Settings" />
-        <item
-            android:id="@+id/nav_videos"
-            android:layout_width="wrap_content"
-            android:title="Conversation Settings" />
     </group>
-
-    <item android:title="Communicate">
-        <menu>
-            <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Support" />
-        </menu>
-    </item>
 
 </menu>

@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class registration extends AppCompatActivity {
+public class Registration extends AppCompatActivity {
 
     private TextInputLayout username;
     private TextInputLayout email;
@@ -113,7 +113,7 @@ public class registration extends AppCompatActivity {
 
                                             if (task.isSuccessful()){
                                                 rRegProgress.dismiss();
-                                                Intent chatload = new Intent(registration.this, Chat.class);
+                                                Intent chatload = new Intent(Registration.this, Chat.class);
                                                 startActivity(chatload);
                                                 finish();
                                             }
@@ -126,7 +126,7 @@ public class registration extends AppCompatActivity {
 
             } else {
                 rRegProgress.hide();
-                Toast.makeText(registration.this, "Unable to register. Check the form and try again.", Toast.LENGTH_LONG).show();
+                Toast.makeText(Registration.this, "Unable to register. Check the form and try again.", Toast.LENGTH_LONG).show();
             }
         }
     });

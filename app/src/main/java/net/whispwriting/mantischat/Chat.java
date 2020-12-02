@@ -104,10 +104,6 @@ public class Chat extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_chat) {
-            // Handle the camera action
-            if (FirebaseAuth.getInstance().getCurrentUser() == null){
-                startActivity(new Intent(this, login.class));
-            }
             Intent intent = new Intent (this, Chat.class);
             startActivity(intent);
         }
@@ -117,8 +113,8 @@ public class Chat extends AppCompatActivity
         if (id == R.id.nav_search_users){
             startActivity(new Intent(this, UserList.class));
         }
-        if (id == R.id.nav_share) {
-
+        if (id == R.id.nav_account_settings){
+            startActivity(new Intent(this, AccountSettings.class));
         }
 
         return true;

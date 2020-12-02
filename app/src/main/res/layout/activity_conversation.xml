@@ -7,7 +7,7 @@
     tools:context=".ConversationActivity">
 
     <include
-        android:layout="@layout/app_bar_layout"
-        android:id="@+id/conversation_bar"/>
+        layout="@layout/content_conversation"
+        android:layout="@layout/app_bar_layout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

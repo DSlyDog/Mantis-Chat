@@ -8,6 +8,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
@@ -20,10 +24,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.HashMap;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import java.util.Map;
 
 public class LoggingIn extends AppCompatActivity {
 
@@ -67,7 +68,7 @@ public class LoggingIn extends AppCompatActivity {
                     loginUser(email_str, password_str, firestore);
                 }
             }
-            });
+        });
     }
 
     public void loginUser(String email, String password, final FirebaseFirestore firestore){
@@ -82,7 +83,7 @@ public class LoggingIn extends AppCompatActivity {
                                         @Override
                                         public void onComplete(@NonNull Task<InstanceIdResult> task) {
                                             if (task.isSuccessful()) {
-                                                HashMap<String, Object> userMap = new HashMap<>();
+                                                Map<String, Object> userMap = new HashMap<>();
                                                 userMap.put("deviceToken", task.getResult().getToken());
                                                 firestore.collection("Users").document(loginTask.getResult().getUser().getUid())
                                                 .set(userMap, SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {

@@ -50,23 +50,14 @@ public class login extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_home) {
+        if (id == R.id.nav_chat) {
             // Handle the camera action
             Intent intent = new Intent (this, Chat.class);
             startActivity(intent);
         }
-        if (id == R.id.nav_drawings) {
-
-        }
-        if (id == R.id.nav_videos) {
-
-        }
         if (id == R.id.nav_chat) {
             Intent intent = new Intent(this, login.class);
             startActivity(intent);
-        }
-        if (id == R.id.nav_share) {
-
         }
 
         return true;
@@ -87,7 +78,7 @@ public class login extends AppCompatActivity
             registryBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent regIntent = new Intent(login.this, registration.class);
+                    Intent regIntent = new Intent(login.this, Registration.class);
                     startActivity(regIntent);
                 }
             });
