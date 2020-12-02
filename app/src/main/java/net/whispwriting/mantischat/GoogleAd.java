@@ -1,18 +1,22 @@
 package net.whispwriting.mantischat;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+
+import android.content.Intent;
+import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
+import android.widget.Toast;
 
 public class GoogleAd extends AppCompatActivity {
     // Remove the below line after defining your own ad unit ID.
@@ -28,10 +32,10 @@ public class GoogleAd extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_second);
+        setContentView(R.layout.activity_google);
 
         // Create the next level button, which tries to show an interstitial when clicked.
-        //mNextLevelButton = ((Button) findViewById(R.id.next_level_button));
+        mNextLevelButton = ((Button) findViewById(R.id.next_level_button));
         mNextLevelButton.setEnabled(false);
         mNextLevelButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,7 +45,7 @@ public class GoogleAd extends AppCompatActivity {
         });
 
         // Create the text view to show the level number.
-        //mLevelTextView = (TextView) findViewById(R.id.level);
+        mLevelTextView = (TextView) findViewById(R.id.level);
         mLevel = START_LEVEL;
 
         // Create the InterstitialAd and set the adUnitId (defined in values/strings.xml).
@@ -51,7 +55,7 @@ public class GoogleAd extends AppCompatActivity {
         // Toasts the test ad message on the screen. Remove this after defining your own ad unit ID.
         Toast.makeText(this, TOAST_TEXT, Toast.LENGTH_LONG).show();
     }
-    /*
+    
         @Override
         public boolean onCreateOptionsMenu(Menu menu) {
             // Inflate the menu; this adds items to the action bar if it is present.
@@ -72,10 +76,10 @@ public class GoogleAd extends AppCompatActivity {
 
             return super.onOptionsItemSelected(item);
         }
-    */
+    
     private InterstitialAd newInterstitialAd() {
         InterstitialAd interstitialAd = new InterstitialAd(this);
-        //interstitialAd.setAdUnitId(getString(R.string.interstitial_ad_unit_id));
+        interstitialAd.setAdUnitId(getString(R.string.interstitial_ad_unit_id));
         interstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdLoaded() {
@@ -117,11 +121,11 @@ public class GoogleAd extends AppCompatActivity {
 
     private void goToNextLevel() {
         // Show the next level and reload the ad to prepare for the level after.
-        // mLevelTextView.setText("Level " + (++mLevel));
-        // mInterstitialAd = newInterstitialAd();
-        // loadInterstitial();
+        mLevelTextView.setText("Level " + (++mLevel));
+        mInterstitialAd = newInterstitialAd();
+        loadInterstitial();
 
-        Intent intent = new Intent( this, LoggingIn.class );
+        Intent intent = new Intent( this, GoogleAdSecondActivity.class );
         startActivity( intent );
 
     }
