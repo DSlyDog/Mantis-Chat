@@ -13,3 +13,5 @@ public class GoogleAdSecondActivity extends AppCompatActivity {
 
     }
 }
+
+
