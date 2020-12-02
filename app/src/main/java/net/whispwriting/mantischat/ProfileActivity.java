@@ -104,13 +104,13 @@ public class ProfileActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             DocumentSnapshot dataSnapshot = task.getResult();
                             if (dataSnapshot.exists()) {
-                                String requestType = dataSnapshot.getString(uid + "request_type");
-                                if (requestType != null && requestType.equals("received")){
+                                List<String> requests = (ArrayList<String>) dataSnapshot.get("requests");
+                                if (requests.contains(uid + "received")){
                                     currentState = 2;
                                     sendFriendRequest.setText("Accept Friend Request");
                                     declineFriendRequest.setEnabled(true);
                                     declineFriendRequest.setVisibility(View.VISIBLE);
-                                }else if (requestType != null && requestType.equals("sent")){
+                                }else if (requests.contains(uid + "sent")){
                                     currentState = 1;
                                     sendFriendRequest.setText("Cancel Friend Request");
                                 }
@@ -156,19 +156,61 @@ public class ProfileActivity extends AppCompatActivity {
                     friendRequestCollection.document(currentUser.getUid()).set(selfFriendRequests, SetOptions.merge());
                     friendRequestCollection.document(uid).set(friendRequests, SetOptions.merge());
 
-                    Map<String, String> notificationData = new HashMap<>();
-                    notificationData.put("from", currentUser.getUid());
-                    notificationData.put("type", "request");
+                    final DocumentReference currentUserRef = firestore.collection("Friend_Requests").document(currentUser.getUid());
+                    final DocumentReference otherUser = firestore.collection("Friend_Requests").document(uid);
 
-                    firebase.getReference().child("notifications").child(uid).push().setValue(notificationData)
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    currentUserRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
-                        public void onComplete(@NonNull Task<Void> task) {
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                             if (task.isSuccessful()){
-                                sendFriendRequest.setEnabled(true);
-                                currentState = 1;
-                                sendFriendRequest.setText("Cancel Request");
-                                Toast.makeText(ProfileActivity.this, "Friend request sent", Toast.LENGTH_SHORT).show();
+                                DocumentSnapshot document = task.getResult();
+                                if (document.exists()){
+                                    List<String> requests = (ArrayList<String>) document.get("requests");
+                                    requests.add(uid + "sent");
+                                    Map<String, Object> selfRequests = new HashMap<>();
+                                    selfRequests.put("requests", requests);
+                                    currentUserRef.set(selfRequests, SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()){
+                                                otherUser.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                        if (task.isSuccessful()){
+                                                            DocumentSnapshot document = task.getResult();
+                                                            if (document.exists()){
+                                                                List<String> requests = (ArrayList<String>) document.get("requests");
+                                                                requests.add(currentUser.getUid() + "received");
+                                                                Map<String, Object> otherRequests = new HashMap<>();
+                                                                otherRequests.put("requests", requests);
+                                                                otherUser.set(otherRequests, SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                                        if (task.isSuccessful()){
+                                                                            Toast.makeText(ProfileActivity.this, "Friend request sent", Toast.LENGTH_SHORT).show();
+                                                                        }else{
+                                                                            Toast.makeText(ProfileActivity.this, "Failed to send friend request", Toast.LENGTH_SHORT).show();
+                                                                        }
+                                                                    }
+                                                                });
+                                                            }else{
+                                                                Toast.makeText(ProfileActivity.this, "Failed to send friend request", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        }else{
+                                                            Toast.makeText(ProfileActivity.this, "Failed to send friend request", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    }
+                                                });
+                                            }else{
+                                                Toast.makeText(ProfileActivity.this, "Failed to send friend request", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+                                }else{
+                                    Toast.makeText(ProfileActivity.this, "Failed to send friend request", Toast.LENGTH_SHORT).show();
+                                }
+                            }else{
+                                Toast.makeText(ProfileActivity.this, "Failed to send friend request", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });

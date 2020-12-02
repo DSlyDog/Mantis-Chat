@@ -11,7 +11,7 @@
         tools:src="@drawable/avatar" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/messageText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/profile_image_message"
@@ -19,6 +19,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="12dp"
         android:layout_toEndOf="@id/profile_image_message"
+        android:background="@drawable/message_background"
         android:text="TextView" />
 
 </RelativeLayout>
