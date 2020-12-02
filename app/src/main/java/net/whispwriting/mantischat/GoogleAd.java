@@ -15,7 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-//import com.google.android.gms.ads.InterstitialAd;
 
 import android.widget.Toast;
 
@@ -33,7 +32,7 @@ public class GoogleAd extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_google);
 
         // Create the next level button, which tries to show an interstitial when clicked.
         mNextLevelButton = ((Button) findViewById(R.id.next_level_button));
@@ -56,7 +55,7 @@ public class GoogleAd extends AppCompatActivity {
         // Toasts the test ad message on the screen. Remove this after defining your own ad unit ID.
         Toast.makeText(this, TOAST_TEXT, Toast.LENGTH_LONG).show();
     }
-    /*
+
         @Override
         public boolean onCreateOptionsMenu(Menu menu) {
             // Inflate the menu; this adds items to the action bar if it is present.
@@ -77,7 +76,7 @@ public class GoogleAd extends AppCompatActivity {
 
             return super.onOptionsItemSelected(item);
         }
-    */
+
     private InterstitialAd newInterstitialAd() {
         InterstitialAd interstitialAd = new InterstitialAd(this);
         interstitialAd.setAdUnitId(getString(R.string.interstitial_ad_unit_id));
@@ -122,11 +121,11 @@ public class GoogleAd extends AppCompatActivity {
 
     private void goToNextLevel() {
         // Show the next level and reload the ad to prepare for the level after.
-        // mLevelTextView.setText("Level " + (++mLevel));
-        // mInterstitialAd = newInterstitialAd();
-        // loadInterstitial();
+        mLevelTextView.setText("Level " + (++mLevel));
+        mInterstitialAd = newInterstitialAd();
+        loadInterstitial();
 
-        Intent intent = new Intent( this, SecondActivity.class );
+        Intent intent = new Intent( this, GoogleAdSecondActivity.class );
         startActivity( intent );
 
     }
