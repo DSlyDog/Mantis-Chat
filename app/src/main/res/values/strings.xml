@@ -45,4 +45,5 @@
     <string name="start_level">start_level</string>
     <string name="next_level">next_level</string>
     <string name="interstitial_ad_sample">interstitial_ad_sample</string>
+    <string name="messageBox">Message</string>
 </resources>
