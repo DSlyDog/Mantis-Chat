@@ -89,8 +89,9 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="320dp"
-        android:layout_height="399dp"
+        android:id="@+id/conversation_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="737dp"
         app:layout_constraintBottom_toTopOf="@+id/view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

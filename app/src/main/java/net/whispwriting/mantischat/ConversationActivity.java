@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,6 +35,7 @@ public class ConversationActivity extends AppCompatActivity {
     private EditText messageBox;
     private FirebaseUser currentUser;
     private DatabaseReference rootRef;
+    private RecyclerView messagesView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +57,8 @@ public class ConversationActivity extends AppCompatActivity {
 
         Picasso.get().load(image).placeholder(R.drawable.avatar).into(profileIcon);
         getSupportActionBar().setTitle(name);
+
+        messagesView = (RecyclerView) findViewById(R.id.conversation_recycler);
 
         sendMessageButton.setOnClickListener(new View.OnClickListener() {
             @Override
