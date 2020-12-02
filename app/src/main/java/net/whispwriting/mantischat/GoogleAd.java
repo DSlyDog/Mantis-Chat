@@ -7,6 +7,7 @@ import com.google.android.gms.ads.InterstitialAd;
 import android.content.Intent;
 import android.os.Bundle;
 
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.util.Log;
@@ -55,7 +56,7 @@ public class GoogleAd extends AppCompatActivity {
         // Toasts the test ad message on the screen. Remove this after defining your own ad unit ID.
         Toast.makeText(this, TOAST_TEXT, Toast.LENGTH_LONG).show();
     }
-
+/*
         @Override
         public boolean onCreateOptionsMenu(Menu menu) {
             // Inflate the menu; this adds items to the action bar if it is present.
@@ -76,6 +77,8 @@ public class GoogleAd extends AppCompatActivity {
 
             return super.onOptionsItemSelected(item);
         }
+        */
+
 
     private InterstitialAd newInterstitialAd() {
         InterstitialAd interstitialAd = new InterstitialAd(this);
