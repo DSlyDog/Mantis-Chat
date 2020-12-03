@@ -139,6 +139,7 @@ public class ProfileActivity extends AppCompatActivity {
                 });
             }
         });
+
         if (currentUser.getUid().equals(uid)){
             sendFriendRequest.setEnabled(false);
             sendFriendRequest.setVisibility(View.INVISIBLE);

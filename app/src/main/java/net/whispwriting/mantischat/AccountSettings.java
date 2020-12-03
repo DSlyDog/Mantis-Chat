@@ -88,7 +88,6 @@ public class AccountSettings extends AppCompatActivity {
                         String name = document.getString("name");
                         final String image = document.getString("image");
                         String status = document.getString("status");
-                        String thumbImage = document.getString("thumb_image");
 
                         if (name.length() >= 22){
                             uName.setTextSize(22);
