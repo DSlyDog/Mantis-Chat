@@ -27,18 +27,23 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.SetOptions;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class FriendsList extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class FriendRequestList extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     private RecyclerView usersListPage;
     private FirebaseFirestore usersDatabase;
@@ -54,7 +59,7 @@ public class FriendsList extends AppCompatActivity implements NavigationView.OnN
 
         Toolbar usersToolbar = findViewById(R.id.FriendListToolbar);
         setSupportActionBar(usersToolbar);
-        getSupportActionBar().setTitle("Friends");
+        getSupportActionBar().setTitle("Friend Requests");
 
         usersDatabase = FirebaseFirestore.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -78,14 +83,14 @@ public class FriendsList extends AppCompatActivity implements NavigationView.OnN
     @Override
     protected void onStart() {
         super.onStart();
-        DocumentReference ref = FirebaseFirestore.getInstance().collection("Users").document(user.getUid());
+        DocumentReference ref = FirebaseFirestore.getInstance().collection("Friend_Requests").document(user.getUid());
         ref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()){
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        friends = (ArrayList<String>) document.get("friends");
+                        friends = (ArrayList<String>) document.get("requests");
                         if (friends.size() > 0) {
                             FirestoreRecyclerOptions<Users> options = new FirestoreRecyclerOptions.Builder<Users>().setQuery(query.whereIn("user_id", friends), Users.class).build();
                             FirestoreRecyclerAdapter<Users, UsersViewHolder> adapter = new FirestoreRecyclerAdapter<Users, UsersViewHolder>(options) {
@@ -97,7 +102,7 @@ public class FriendsList extends AppCompatActivity implements NavigationView.OnN
                                 }
 
                                 @Override
-                                protected void onBindViewHolder(@NonNull UsersViewHolder usersViewHolder, int i, @NonNull final Users users) {
+                                protected void onBindViewHolder(@NonNull final UsersViewHolder usersViewHolder, int i, @NonNull final Users users) {
                                     if (users != null) {
                                         usersViewHolder.setName(users.name);
                                         usersViewHolder.setStatus(users.status);
@@ -107,22 +112,18 @@ public class FriendsList extends AppCompatActivity implements NavigationView.OnN
                                         usersViewHolder.mView.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View view) {
-                                                CharSequence[] options = new CharSequence[]{"View Profile", "Send Message"};
-                                                AlertDialog.Builder alert = new AlertDialog.Builder(FriendsList.this);
+                                                CharSequence[] options = new CharSequence[]{"Accept Friend Request", "Decline Friend Request"};
+                                                AlertDialog.Builder alert = new AlertDialog.Builder(FriendRequestList.this);
                                                 alert.setTitle(users.name);
                                                 alert.setItems(options, new DialogInterface.OnClickListener() {
                                                     @Override
                                                     public void onClick(DialogInterface dialogInterface, int i) {
                                                         if (i == 0){
-                                                            Intent profilePage = new Intent(FriendsList.this, ProfileActivity.class);
-                                                            profilePage.putExtra("userID", userID);
-                                                            startActivity(profilePage);
+                                                            removeFriendRequest(userID);
+                                                            changeFriend(true, userID);
                                                         }else if (i == 1){
-                                                            Intent conversationIntent = new Intent(FriendsList.this, ConversationActivity.class);
-                                                            conversationIntent.putExtra("userID", userID);
-                                                            conversationIntent.putExtra("name", users.name);
-                                                            conversationIntent.putExtra("image", users.image);
-                                                            startActivity(conversationIntent);
+                                                            removeFriendRequest(userID);
+                                                            changeFriend(false, userID);
                                                         }
                                                     }
                                                 });
@@ -136,6 +137,113 @@ public class FriendsList extends AppCompatActivity implements NavigationView.OnN
                             usersListPage.setAdapter(adapter);
                             adapter.startListening();
                         }
+                    }
+                }
+            }
+        });
+    }
+
+    public void removeFriendRequest(final String uid){
+        final Map<String, Object> friendRequests = new HashMap<>();
+        Map<String, Object> selfFriendRequests = new HashMap<>();
+        selfFriendRequests.put(uid + "request_type", FieldValue.delete());
+        selfFriendRequests.put(user.getUid() + "request_type", FieldValue.delete());
+        friendRequests.put(user.getUid() + "request_type", FieldValue.delete());
+        friendRequests.put(uid + "request_type", FieldValue.delete());
+        final CollectionReference friendRequestCollection = FirebaseFirestore.getInstance().collection("Friend_Requests");
+        friendRequestCollection.document(user.getUid()).set(selfFriendRequests, SetOptions.merge())
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()){
+                            friendRequestCollection.document(uid).set(friendRequests, SetOptions.merge());
+                        }
+                    }
+                });
+
+        friendRequestCollection.document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()){
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()){
+                        List<String> requests = (ArrayList<String>) document.get("requests");
+                        if (requests != null) {
+                            requests.remove(user.getUid());
+                            requests.remove(uid);
+                            Map<String, Object> selfRequestsList = new HashMap<>();
+                            selfRequestsList.put("requests", requests);
+                            friendRequestCollection.document(uid).set(selfRequestsList, SetOptions.merge());
+                        }
+                    }
+                }
+            }
+        });
+
+        friendRequestCollection.document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()){
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()){
+                        List<String> requests = (ArrayList<String>) document.get("requests");
+                        if (requests != null) {
+                            requests.remove(uid);
+                            requests.remove(user.getUid());
+                            Map<String, Object> selfRequestsList = new HashMap<>();
+                            selfRequestsList.put("requests", requests);
+                            friendRequestCollection.document(user.getUid()).set(selfRequestsList, SetOptions.merge());
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    public void changeFriend(final boolean adding, final String uid){
+        final CollectionReference userRef = FirebaseFirestore.getInstance().collection("Users");
+
+        userRef.document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    final DocumentSnapshot selfDocument = task.getResult();
+                    if (selfDocument.exists()) {
+                        userRef.document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()){
+                                    final DocumentSnapshot userDocument = task.getResult();
+                                    if (userDocument.exists()){
+                                        List<String> selfFriends = (ArrayList<String>) selfDocument.get("friends");
+                                        if (adding)
+                                            selfFriends.add(uid);
+                                        else
+                                            selfFriends.remove(uid);
+                                        Map<String, Object> selfFriendMap = new HashMap<>();
+                                        selfFriendMap.put("friends", selfFriends);
+                                        userRef.document(user.getUid()).set(selfFriendMap, SetOptions.merge())
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (task.isSuccessful()){
+                                                            List<String> userFriends = (ArrayList<String>) userDocument.get("friends");
+                                                            if (adding)
+                                                                userFriends.add(user.getUid());
+                                                            else
+                                                                userFriends.remove(user.getUid());
+                                                            Map<String, Object> userFriendMap = new HashMap<>();
+                                                            userFriendMap.put("friends", userFriends);
+                                                            userRef.document(uid).set(userFriendMap, SetOptions.merge());
+                                                            finish();
+                                                            startActivity(new Intent(FriendRequestList.this, FriendRequestList.class));
+                                                        }
+                                                    }
+                                                });
+                                    }
+                                }
+                            }
+                        });
                     }
                 }
             }
@@ -196,7 +304,7 @@ public class FriendsList extends AppCompatActivity implements NavigationView.OnN
             startActivity(intent);
         }
         if (id == R.id.nav_friends){
-            onBackPressed();
+            startActivity(new Intent(this, FriendsList.class));
         }
         if (id == R.id.nav_search_users){
             startActivity(new Intent(this, UserList.class));
@@ -205,7 +313,7 @@ public class FriendsList extends AppCompatActivity implements NavigationView.OnN
             startActivity(new Intent(this, AccountSettings.class));
         }
         if (id == R.id.nav_requests){
-            startActivity(new Intent(this, FriendRequestList.class));
+            onBackPressed();
         }
 
         return true;

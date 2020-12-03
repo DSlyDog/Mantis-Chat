@@ -15,7 +15,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class login extends AppCompatActivity
+public class Login extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
     private FirebaseAuth mAuth;
     private Button registryBtn;
@@ -56,7 +56,7 @@ public class login extends AppCompatActivity
             startActivity(intent);
         }
         if (id == R.id.nav_chat) {
-            Intent intent = new Intent(this, login.class);
+            Intent intent = new Intent(this, Login.class);
             startActivity(intent);
         }
 
@@ -78,7 +78,7 @@ public class login extends AppCompatActivity
             registryBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent regIntent = new Intent(login.this, Registration.class);
+                    Intent regIntent = new Intent(Login.this, Registration.class);
                     startActivity(regIntent);
                 }
             });
@@ -86,7 +86,7 @@ public class login extends AppCompatActivity
             loginBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent logIntent = new Intent(login.this, LoggingIn.class);
+                    Intent logIntent = new Intent(Login.this, LoggingIn.class);
                     startActivity(logIntent);
                 }
             });

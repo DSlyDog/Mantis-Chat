@@ -33,7 +33,7 @@ public class Chat extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (FirebaseAuth.getInstance().getCurrentUser() == null){
-            startActivity(new Intent(this, login.class));
+            startActivity(new Intent(this, Login.class));
             return;
         }
         setContentView(R.layout.activity_chat);
@@ -82,7 +82,7 @@ public class Chat extends AppCompatActivity
 
         if (item.getItemId() == R.id.action_logout){
             FirebaseAuth.getInstance().signOut();
-            Intent loginSplash = new Intent(this, login.class);
+            Intent loginSplash = new Intent(this, Login.class);
             startActivity(loginSplash);
         }
         if (item.getItemId() == R.id.action_accounts){
@@ -104,8 +104,7 @@ public class Chat extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_chat) {
-            Intent intent = new Intent (this, Chat.class);
-            startActivity(intent);
+            onBackPressed();
         }
         if (id == R.id.nav_friends){
             startActivity(new Intent(this, FriendsList.class));
@@ -115,6 +114,9 @@ public class Chat extends AppCompatActivity
         }
         if (id == R.id.nav_account_settings){
             startActivity(new Intent(this, AccountSettings.class));
+        }
+        if (id == R.id.nav_requests){
+            startActivity(new Intent(this, FriendRequestList.class));
         }
 
         return true;

@@ -175,12 +175,34 @@ public class ProfileActivity extends AppCompatActivity {
 
     public void addFriendRequest(){
         Map<String, Object> friendRequests = new HashMap<>();
-        Map<String, Object> selfFriendRequests = new HashMap<>();
+        final Map<String, Object> selfFriendRequests = new HashMap<>();
         selfFriendRequests.put(uid + "request_type", "sent");
         friendRequests.put(currentUser.getUid() + "request_type", "received");
-        CollectionReference friendRequestCollection = firestore.collection("Friend_Requests");
+        final CollectionReference friendRequestCollection = firestore.collection("Friend_Requests");
         friendRequestCollection.document(currentUser.getUid()).set(selfFriendRequests, SetOptions.merge());
         friendRequestCollection.document(uid).set(friendRequests, SetOptions.merge());
+
+        friendRequestCollection.document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()){
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        List<String> requests = (ArrayList<String>) document.get("requests");
+                        Map<String, Object> selfRequestsList = new HashMap<>();
+                        if (requests != null) {
+                            requests.add(currentUser.getUid());
+                        }else{
+                            requests = new ArrayList<>();
+                            requests.add(currentUser.getUid());
+                        }
+                        selfRequestsList.put("requests", requests);
+                        friendRequestCollection.document(uid).set(selfRequestsList, SetOptions.merge());
+                    }
+                }
+            }
+        });
+
         sendFriendRequest.setEnabled(true);
         currentState = 1;
         sendFriendRequest.setText("Cancel Request");
@@ -190,7 +212,9 @@ public class ProfileActivity extends AppCompatActivity {
         final Map<String, Object> friendRequests = new HashMap<>();
         Map<String, Object> selfFriendRequests = new HashMap<>();
         selfFriendRequests.put(uid + "request_type", FieldValue.delete());
+        selfFriendRequests.put(currentUser.getUid() + "request_type", FieldValue.delete());
         friendRequests.put(currentUser.getUid() + "request_type", FieldValue.delete());
+        friendRequests.put(uid + "request_type", FieldValue.delete());
         final CollectionReference friendRequestCollection = firestore.collection("Friend_Requests");
         friendRequestCollection.document(currentUser.getUid()).set(selfFriendRequests, SetOptions.merge())
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -213,6 +237,44 @@ public class ProfileActivity extends AppCompatActivity {
                         }
                     }
                 });
+
+        friendRequestCollection.document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()){
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()){
+                        List<String> requests = (ArrayList<String>) document.get("requests");
+                        if (requests != null) {
+                            requests.remove(currentUser.getUid());
+                            requests.remove(uid);
+                            Map<String, Object> selfRequestsList = new HashMap<>();
+                            selfRequestsList.put("requests", requests);
+                            friendRequestCollection.document(uid).set(selfRequestsList, SetOptions.merge());
+                        }
+                    }
+                }
+            }
+        });
+
+        friendRequestCollection.document(currentUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()){
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()){
+                        List<String> requests = (ArrayList<String>) document.get("requests");
+                        if (requests != null) {
+                            requests.remove(uid);
+                            requests.remove(currentUser.getUid());
+                            Map<String, Object> selfRequestsList = new HashMap<>();
+                            selfRequestsList.put("requests", requests);
+                            friendRequestCollection.document(currentUser.getUid()).set(selfRequestsList, SetOptions.merge());
+                        }
+                    }
+                }
+            }
+        });
     }
 
     public void changeFriend(final boolean adding){
