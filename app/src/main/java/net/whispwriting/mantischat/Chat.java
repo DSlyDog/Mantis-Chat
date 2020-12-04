@@ -6,8 +6,13 @@ import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,9 +20,15 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
+
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+
 
 public class Chat extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -28,6 +39,9 @@ public class Chat extends AppCompatActivity
     public static String CHANNEL_ID = "main";
     private DocumentReference userDoc;
     private FirebaseAuth user;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +111,62 @@ public class Chat extends AppCompatActivity
         return true;
     }
 
+
+    private InterstitialAd mInterstitialAd;
+
+
+    private InterstitialAd newInterstitialAd() {
+        InterstitialAd interstitialAd = new InterstitialAd(this);
+        interstitialAd.setAdUnitId(getString(R.string.interstitial_ad_unit_id));
+        interstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+            }
+
+
+            @Override
+            public void onAdClosed() {
+                // Proceed to the next level.
+                Log.w( "MA", "MA: inside onAdClosed" );
+                goToNextLevel();
+            }
+        });
+        return interstitialAd;
+    }
+
+
+
+
+    private void showInterstitial() {
+        // Show the ad if it"s ready. Otherwise toast and reload the ad.
+        if (mInterstitialAd != null && mInterstitialAd.isLoaded()) {
+            mInterstitialAd.show();
+        } else {
+            Toast.makeText(this, "Ad did not load", Toast.LENGTH_SHORT).show();
+            goToNextLevel();
+        }
+    }
+
+
+
+
+    private void loadInterstitial() {
+        // Disable the next level button and load the ad.
+        AdRequest adRequest = new AdRequest.Builder()
+                .setRequestAgent("android_studio:ad_template").build();
+        mInterstitialAd.loadAd(adRequest);
+    }
+
+
+    private void goToNextLevel() {
+        // Show the next level and reload the ad to prepare for the level after.
+        mInterstitialAd = newInterstitialAd();
+        loadInterstitial();
+
+        startActivity(new Intent(this, AccountSettings.class));
+    }
+
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -112,8 +182,10 @@ public class Chat extends AppCompatActivity
         if (id == R.id.nav_search_users){
             startActivity(new Intent(this, UserList.class));
         }
-        if (id == R.id.nav_account_settings){
-            startActivity(new Intent(this, AccountSettings.class));
+        if (id == R.id.nav_account_settings){ // Put ad code here
+            mInterstitialAd = newInterstitialAd();
+            loadInterstitial();
+            showInterstitial();
         }
         if (id == R.id.nav_requests){
             startActivity(new Intent(this, FriendRequestList.class));
