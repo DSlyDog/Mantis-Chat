@@ -112,7 +112,7 @@ public class Chat extends AppCompatActivity
         if (id == R.id.nav_search_users){
             startActivity(new Intent(this, UserList.class));
         }
-        if (id == R.id.nav_account_settings){
+        if (id == R.id.nav_account_settings){ // Put ad code here
             startActivity(new Intent(this, AccountSettings.class));
         }
         if (id == R.id.nav_requests){
