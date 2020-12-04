@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:padding="15dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_image_message"
@@ -20,6 +21,8 @@
         android:layout_marginTop="12dp"
         android:layout_toEndOf="@id/profile_image_message"
         android:background="@drawable/message_background"
-        android:text="TextView" />
+        android:padding="15dp"
+        android:text="TextView"
+        android:textSize="18sp" />
 
 </RelativeLayout>
