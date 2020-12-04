@@ -9,9 +9,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -20,14 +17,12 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
-
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
 
 
 public class Chat extends AppCompatActivity
@@ -57,6 +52,9 @@ public class Chat extends AppCompatActivity
         Intent intent = new Intent(this, Chat.class);
         lastIntent = intent;
         createNotificationChannel();
+
+        mInterstitialAd = newInterstitialAd();
+        loadInterstitial();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -183,8 +181,6 @@ public class Chat extends AppCompatActivity
             startActivity(new Intent(this, UserList.class));
         }
         if (id == R.id.nav_account_settings){ // Put ad code here
-            mInterstitialAd = newInterstitialAd();
-            loadInterstitial();
             showInterstitial();
         }
         if (id == R.id.nav_requests){
