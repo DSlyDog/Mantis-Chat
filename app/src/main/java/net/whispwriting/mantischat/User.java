@@ -1,19 +1,21 @@
 package net.whispwriting.mantischat;
 
-public class Users {
+public class User {
     public String name;
     public String image;
     public String status;
     public String thumbImage;
+    public String uid;
 
-    public Users(){
+    public User(){
 
     }
 
-    public Users(String name, String image, String status) {
+    public User(String name, String image, String status, String uid) {
         this.name = name;
         this.image = image;
         this.status = status;
+        this.uid = uid;
     }
 
     public String getName() {
@@ -30,6 +32,14 @@ public class Users {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getUid(){
+        return uid;
+    }
+
+    public void setUid(String uid){
+        this.uid = uid;
     }
 
     public String getStatus() {

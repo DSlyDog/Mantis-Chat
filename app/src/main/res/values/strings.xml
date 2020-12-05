@@ -46,4 +46,5 @@
     <string name="next_level">next_level</string>
     <string name="interstitial_ad_sample">interstitial_ad_sample</string>
     <string name="messageBox">Message</string>
+    <string name="defaultMessageText">message</string>
 </resources>

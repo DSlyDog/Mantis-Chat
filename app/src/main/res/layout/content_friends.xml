@@ -9,11 +9,12 @@
         android:id="@+id/FriendListToolbar"/>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/FriendListPage"
         android:layout_width="match_parent"
-        android:layout_height="669dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/FriendListToolbar"
-        tools:layout_editor_absoluteX="0dp"
-        android:id="@+id/FriendListPage">
+        tools:layout_editor_absoluteX="0dp">
 
     </androidx.recyclerview.widget.RecyclerView>
 

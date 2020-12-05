@@ -47,8 +47,8 @@ public class UserList extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        FirestoreRecyclerOptions<Users> options = new FirestoreRecyclerOptions.Builder<Users>().setQuery(usersDatabase.collection("Users"), Users.class).build();
-        FirestoreRecyclerAdapter<Users, UsersViewHolder> adapter = new FirestoreRecyclerAdapter<Users, UsersViewHolder>(options) {
+        FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(usersDatabase.collection("Users"), User.class).build();
+        FirestoreRecyclerAdapter<User, UsersViewHolder> adapter = new FirestoreRecyclerAdapter<User, UsersViewHolder>(options) {
             @Override
             public UsersViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
                 View view = LayoutInflater.from(parent.getContext())
@@ -57,7 +57,7 @@ public class UserList extends AppCompatActivity {
             }
 
             @Override
-            protected void onBindViewHolder(@NonNull UsersViewHolder usersViewHolder, int i, @NonNull Users users) {
+            protected void onBindViewHolder(@NonNull UsersViewHolder usersViewHolder, int i, @NonNull User users) {
                 usersViewHolder.setName(users.name);
                 usersViewHolder.setStatus(users.status);
                 usersViewHolder.setImg(users.image);

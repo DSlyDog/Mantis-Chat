@@ -31,10 +31,13 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.SetOptions;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -46,6 +49,7 @@ public class FriendsList extends AppCompatActivity implements NavigationView.OnN
     private FirebaseUser user;
     private List<String> friends;
     private Query query;
+    private String currentUserName, currentUserImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,10 +89,12 @@ public class FriendsList extends AppCompatActivity implements NavigationView.OnN
                 if (task.isSuccessful()){
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
+                        currentUserName = document.getString("name");
+                        currentUserImage = document.getString("image");
                         friends = (ArrayList<String>) document.get("friends");
                         if (friends.size() > 0) {
-                            FirestoreRecyclerOptions<Users> options = new FirestoreRecyclerOptions.Builder<Users>().setQuery(query.whereIn("user_id", friends), Users.class).build();
-                            FirestoreRecyclerAdapter<Users, UsersViewHolder> adapter = new FirestoreRecyclerAdapter<Users, UsersViewHolder>(options) {
+                            FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query.whereIn("user_id", friends), User.class).build();
+                            FirestoreRecyclerAdapter<User, UsersViewHolder> adapter = new FirestoreRecyclerAdapter<User, UsersViewHolder>(options) {
                                 @Override
                                 public UsersViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
                                     View view = LayoutInflater.from(parent.getContext())
@@ -97,7 +103,7 @@ public class FriendsList extends AppCompatActivity implements NavigationView.OnN
                                 }
 
                                 @Override
-                                protected void onBindViewHolder(@NonNull UsersViewHolder usersViewHolder, int i, @NonNull final Users users) {
+                                protected void onBindViewHolder(@NonNull UsersViewHolder usersViewHolder, int i, @NonNull final User users) {
                                     if (users != null) {
                                         usersViewHolder.setName(users.name);
                                         usersViewHolder.setStatus(users.status);
@@ -122,6 +128,8 @@ public class FriendsList extends AppCompatActivity implements NavigationView.OnN
                                                             conversationIntent.putExtra("userID", userID);
                                                             conversationIntent.putExtra("name", users.name);
                                                             conversationIntent.putExtra("image", users.image);
+                                                            updateConversationsStack(user.getUid(), userID, users.name, users.image);
+                                                            updateConversationsStack(userID, user.getUid(), currentUserName, currentUserImage);
                                                             startActivity(conversationIntent);
                                                         }
                                                     }
@@ -140,6 +148,37 @@ public class FriendsList extends AppCompatActivity implements NavigationView.OnN
                 }
             }
         });
+    }
+
+    private void updateConversationsStack(final String userID, final String otherUserID, String otherUserName, String otherUserImage){
+        FirebaseFirestore.getInstance().collection("Users")
+                .document(userID).get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful() && task.getResult().exists()){
+                            DocumentSnapshot document = task.getResult();
+                            List<String> conversations = (ArrayList<String>) document.get("conversations");
+                            Map<String, Object> conversationMap = new HashMap<>();
+                            if (conversations == null) {
+                                conversations = new ArrayList<>();
+                            }
+                            if (!conversations.contains(otherUserID)){
+                                conversations.add(otherUserID);
+                            }
+                            conversationMap.put("conversations", conversations);
+                            FirebaseFirestore.getInstance().collection("Users")
+                                    .document(userID).set(conversationMap, SetOptions.merge());
+                        }
+                    }
+                });
+        Map<String, Object> conversationMap = new HashMap<>();
+        conversationMap.put("timestamp", System.currentTimeMillis());
+        conversationMap.put("user_id", otherUserID);
+        conversationMap.put("name", otherUserName);
+        conversationMap.put("image", otherUserImage);
+        FirebaseFirestore.getInstance().collection("Conversations")
+                .document(userID).collection("recipients").document(otherUserID).set(conversationMap, SetOptions.merge());
     }
 
     @Override

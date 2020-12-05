@@ -7,36 +7,66 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.SetOptions;
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class Chat extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private RecyclerView usersListPage;
     public Intent lastIntent;
-    private DrawerLayout drawer;
-    private ActionBarDrawerToggle toggle;
     public static String CHANNEL_ID = "main";
-    private DocumentReference userDoc;
-    private FirebaseAuth user;
-
-
-
+    private FirebaseUser user;
+    private List<String> conversations;
+    private FirebaseFirestore usersDatabase;
+    private Query query;
+    private String currentUserName, currentUserImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +83,14 @@ public class Chat extends AppCompatActivity
         lastIntent = intent;
         createNotificationChannel();
 
+        usersDatabase = FirebaseFirestore.getInstance();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        query = usersDatabase.collection("Conversations").document(user.getUid()).collection("recipients");
+
+        usersListPage = (RecyclerView) findViewById(R.id.chat_recycler);
+        usersListPage.setHasFixedSize(true);
+        usersListPage.setLayoutManager(new LinearLayoutManager(this));
+
         mInterstitialAd = newInterstitialAd();
         loadInterstitial();
 
@@ -64,6 +102,92 @@ public class Chat extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        start();
+    }
+
+    protected void start() {
+        super.onStart();
+        DocumentReference ref = FirebaseFirestore.getInstance().collection("Users").document(user.getUid());
+        ref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()){
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        currentUserName = document.getString("name");
+                        currentUserImage = document.getString("image");
+                        conversations = (ArrayList<String>) document.get("conversations");
+                        if (conversations != null && conversations.size() > 0) {
+                            FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
+                                    .setQuery(query.whereIn("user_id", conversations).orderBy("timestamp", Query.Direction.DESCENDING), User.class).build();
+                            FirestoreRecyclerAdapter<User, Chat.UsersViewHolder> adapter = new FirestoreRecyclerAdapter<User, Chat.UsersViewHolder>(options) {
+                                @Override
+                                public Chat.UsersViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                                    View view = LayoutInflater.from(parent.getContext())
+                                            .inflate(R.layout.single_user_layout, parent, false);
+                                    return new Chat.UsersViewHolder(view);
+                                }
+
+                                @Override
+                                protected void onBindViewHolder(@NonNull Chat.UsersViewHolder usersViewHolder, int i, @NonNull final User users) {
+                                    final String userID = getSnapshots().getSnapshot(i).getId();
+                                    usersViewHolder.setName(users.name);
+                                    usersViewHolder.setLastMessage(user.getUid(), userID);
+                                    usersViewHolder.setImg(users.image);
+
+                                    usersViewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            Intent conversationIntent = new Intent(Chat.this, ConversationActivity.class);
+                                            conversationIntent.putExtra("userID", userID);
+                                            conversationIntent.putExtra("name", users.name);
+                                            conversationIntent.putExtra("image", users.image);
+                                            updateConversationsStack(user.getUid(), userID, users.name, users.image);
+                                            updateConversationsStack(userID, user.getUid(), currentUserName, currentUserImage);
+                                            startActivity(conversationIntent);
+                                        }
+                                    });
+                                }
+                            };
+                            usersListPage.setAdapter(adapter);
+                            adapter.startListening();
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    private void updateConversationsStack(final String userID, final String otherUserID, String otherUserName, String otherUserImage){
+        FirebaseFirestore.getInstance().collection("Users")
+                .document(userID).get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful() && task.getResult().exists()){
+                            DocumentSnapshot document = task.getResult();
+                            List<String> conversations = (ArrayList<String>) document.get("conversations");
+                            Map<String, Object> conversationMap = new HashMap<>();
+                            if (conversations == null) {
+                                conversations = new ArrayList<>();
+                            }
+                            if (!conversations.contains(otherUserID)){
+                                conversations.add(otherUserID);
+                            }
+                            conversationMap.put("conversations", conversations);
+                            FirebaseFirestore.getInstance().collection("Users")
+                                    .document(userID).set(conversationMap, SetOptions.merge());
+                        }
+                    }
+                });
+        Map<String, Object> conversationMap = new HashMap<>();
+        conversationMap.put("timestamp", System.currentTimeMillis());
+        conversationMap.put("user_id", otherUserID);
+        conversationMap.put("name", otherUserName);
+        conversationMap.put("image", otherUserImage);
+        FirebaseFirestore.getInstance().collection("Conversations")
+                .document(userID).collection("recipients").document(otherUserID).set(conversationMap, SetOptions.merge());
     }
 
     @Override
@@ -199,6 +323,71 @@ public class Chat extends AppCompatActivity
             channel.setDescription(description);
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    public static class UsersViewHolder extends RecyclerView.ViewHolder{
+
+        View mView;
+
+        public UsersViewHolder(@NonNull View itemView) {
+            super(itemView);
+            mView = itemView;
+        }
+        public void setName (String name){
+            TextView userNameView = (TextView) mView.findViewById(R.id.userListName);
+            userNameView.setText(name);
+        }
+        public void setLastMessage (String currentUserID, String otherUserID) {
+            final TextView userStatusVIew = (TextView) mView.findViewById(R.id.userListStatus);
+            userStatusVIew.setText("");
+            DatabaseReference messages = FirebaseDatabase.getInstance().getReference().child("messages").child(currentUserID).child(otherUserID);
+            messages.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                    Iterable<DataSnapshot> data = snapshot.getChildren();
+                    Log.w("messages_snapshot", snapshot.getChildrenCount() + "");
+                    Iterator<DataSnapshot> snaps = data.iterator();
+                    DataSnapshot messageData;
+                    do {
+                        messageData = snaps.next();
+                        String key = (String) messageData.getKey();
+                        if (key.equals("message")) {
+                            String value = (String) messageData.getValue();
+                            userStatusVIew.setText(value);
+                        }
+                    }while (snaps.hasNext());
+                }
+
+                @Override
+                public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                }
+
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+        public void setImg (String image){
+            CircleImageView userImageView = (CircleImageView) mView.findViewById(R.id.userListImg);
+            if (!image.equals("default"))
+                Picasso.get().load(image).placeholder(R.drawable.avatar).into(userImageView);
+        }
+        public void delete(){
+            ViewGroup group = (ViewGroup) mView.getParent();
+            group.removeView(mView);
         }
     }
 }

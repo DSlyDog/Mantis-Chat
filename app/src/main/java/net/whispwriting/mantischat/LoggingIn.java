@@ -93,9 +93,15 @@ public class LoggingIn extends AppCompatActivity {
                                                             rLogProgress.dismiss();
                                                             Intent intent = new Intent(LoggingIn.this, Chat.class);
                                                             startActivity(intent);
+                                                        }else{
+                                                            rLogProgress.dismiss();
+                                                            Toast.makeText(LoggingIn.this, "Failed to log in", Toast.LENGTH_LONG).show();
                                                         }
                                                     }
                                                 });
+                                            }else{
+                                                rLogProgress.dismiss();
+                                                Toast.makeText(LoggingIn.this, "Failed to log in", Toast.LENGTH_LONG).show();
                                             }
                                         }
                                     });

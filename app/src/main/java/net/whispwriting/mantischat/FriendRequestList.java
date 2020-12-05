@@ -92,8 +92,8 @@ public class FriendRequestList extends AppCompatActivity implements NavigationVi
                     if (document.exists()) {
                         friends = (ArrayList<String>) document.get("requests");
                         if (friends.size() > 0) {
-                            FirestoreRecyclerOptions<Users> options = new FirestoreRecyclerOptions.Builder<Users>().setQuery(query.whereIn("user_id", friends), Users.class).build();
-                            FirestoreRecyclerAdapter<Users, UsersViewHolder> adapter = new FirestoreRecyclerAdapter<Users, UsersViewHolder>(options) {
+                            FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query.whereIn("user_id", friends), User.class).build();
+                            FirestoreRecyclerAdapter<User, UsersViewHolder> adapter = new FirestoreRecyclerAdapter<User, UsersViewHolder>(options) {
                                 @Override
                                 public UsersViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
                                     View view = LayoutInflater.from(parent.getContext())
@@ -102,7 +102,7 @@ public class FriendRequestList extends AppCompatActivity implements NavigationVi
                                 }
 
                                 @Override
-                                protected void onBindViewHolder(@NonNull final UsersViewHolder usersViewHolder, int i, @NonNull final Users users) {
+                                protected void onBindViewHolder(@NonNull final UsersViewHolder usersViewHolder, int i, @NonNull final User users) {
                                     if (users != null) {
                                         usersViewHolder.setName(users.name);
                                         usersViewHolder.setStatus(users.status);
