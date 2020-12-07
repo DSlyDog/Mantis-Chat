@@ -54,10 +54,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         if (message.getFrom().equals(currentUser.getUid())){
             viewHolder.messageText.setVisibility(View.INVISIBLE);
             viewHolder.image.setVisibility(View.INVISIBLE);
+            viewHolder.receivedImage.setVisibility(View.INVISIBLE);
             if (message.getType().equals("image")){
                 viewHolder.sentMessageText.setVisibility(View.INVISIBLE);
                 Picasso.get().load(message.getMessage()).into(viewHolder.sentImage);
-                viewHolder.sentImage.setMaxHeight(50);
                 viewHolder.sentImage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -79,6 +79,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             }
         }else{
             viewHolder.sentMessageText.setVisibility(View.INVISIBLE);
+            viewHolder.sentImage.setVisibility(View.INVISIBLE);
             FirebaseFirestore.getInstance().collection("Users").document(message.getFrom())
                     .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -97,7 +98,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             if (message.getType().equals("image")){
                 viewHolder.messageText.setVisibility(View.INVISIBLE);
                 Picasso.get().load(message.getMessage()).into(viewHolder.receivedImage);
-                viewHolder.receivedImage.setMaxHeight(50);
                 viewHolder.receivedImage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

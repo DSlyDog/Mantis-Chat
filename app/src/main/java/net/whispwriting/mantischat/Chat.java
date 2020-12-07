@@ -136,7 +136,7 @@ public class Chat extends AppCompatActivity
                                     usersViewHolder.mView.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
-                                            Intent conversationIntent = new Intent(Chat.this, ConversationActivity.class);
+                                            Intent conversationIntent = new Intent(Chat.this, Conversation.class);
                                             conversationIntent.putExtra("userID", userID);
                                             conversationIntent.putExtra("name", users.name);
                                             conversationIntent.putExtra("image", users.image);

@@ -41,7 +41,7 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ConversationActivity extends AppCompatActivity {
+public class Conversation extends AppCompatActivity {
 
     private String userID, name, image;
     private DocumentReference userDoc;
@@ -105,7 +105,7 @@ public class ConversationActivity extends AppCompatActivity {
             public void onClick(View view) {
                 CropImage.activity()
                         .setGuidelines(CropImageView.Guidelines.ON)
-                        .start(ConversationActivity.this);
+                        .start(Conversation.this);
             }
         });
     }
@@ -187,6 +187,7 @@ public class ConversationActivity extends AppCompatActivity {
                 Message message = snapshot.getValue(Message.class);
                 messageList.add(message);
                 messageAdapter.notifyDataSetChanged();
+                //messageAdapter.notifyItemInserted(messageList.size()-1);
             }
 
             @Override

@@ -127,7 +127,7 @@ public class FriendsList extends AppCompatActivity implements NavigationView.OnN
                                                             profilePage.putExtra("userID", userID);
                                                             startActivity(profilePage);
                                                         }else if (i == 1){
-                                                            Intent conversationIntent = new Intent(FriendsList.this, ConversationActivity.class);
+                                                            Intent conversationIntent = new Intent(FriendsList.this, Conversation.class);
                                                             conversationIntent.putExtra("userID", userID);
                                                             conversationIntent.putExtra("name", users.name);
                                                             conversationIntent.putExtra("image", users.image);
