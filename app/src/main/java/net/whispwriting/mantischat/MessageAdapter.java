@@ -57,7 +57,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             if (message.getType().equals("image")){
                 viewHolder.sentMessageText.setVisibility(View.INVISIBLE);
                 Picasso.get().load(message.getMessage()).into(viewHolder.sentImage);
-                viewHolder.image.setMaxHeight(400);
+                viewHolder.sentImage.setMaxHeight(50);
                 viewHolder.sentImage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -90,7 +90,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                                     .networkPolicy(NetworkPolicy.OFFLINE)
                                     .placeholder(R.drawable.avatar)
                                     .into(viewHolder.image);
-                            viewHolder.image.setMaxHeight(400);
                         }
                     }
                 }
@@ -98,6 +97,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             if (message.getType().equals("image")){
                 viewHolder.messageText.setVisibility(View.INVISIBLE);
                 Picasso.get().load(message.getMessage()).into(viewHolder.receivedImage);
+                viewHolder.receivedImage.setMaxHeight(50);
                 viewHolder.receivedImage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

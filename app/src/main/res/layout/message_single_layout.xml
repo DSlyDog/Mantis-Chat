@@ -47,11 +47,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/messageText"
-        android:layout_alignStart="@id/profile_image_message"
-        android:layout_toStartOf="@id/profile_image_message"
-        android:layout_alignEnd="@+id/sentMessageText"
-        android:layout_toEndOf="@id/sentMessageText"
-        android:maxHeight="200sp"
+        android:layout_marginStart="14dp"
+        android:layout_toEndOf="@id/profile_image_message"
+        android:layout_alignEnd="@id/messageText"
+        android:maxHeight="50dp"
+        android:maxWidth="50dp"
         android:scaleType="centerCrop" />
 
     <ImageView
@@ -59,11 +59,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/sentMessageText"
-        android:layout_alignStart="@id/profile_image_message"
-        android:layout_alignEnd="@+id/sentMessageText"
-        android:layout_toStartOf="@id/profile_image_message"
-        android:layout_toEndOf="@id/sentMessageText"
-        android:maxHeight="200sp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="0dp"
+        android:layout_alignStart="@id/sentMessageText"
+        android:maxHeight="50dp"
+        android:maxWidth="50dp"
         android:scaleType="centerCrop" />
 
 </RelativeLayout>
