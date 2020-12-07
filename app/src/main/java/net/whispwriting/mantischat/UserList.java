@@ -3,27 +3,40 @@ package net.whispwriting.mantischat;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.squareup.picasso.Picasso;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class UserList extends AppCompatActivity {
+public class UserList extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     private RecyclerView usersListPage;
     private FirebaseFirestore usersDatabase;
     private CircleImageView userListImg;
+    private FloatingActionButton searchButton;
+    private GoogleAd ad;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +45,7 @@ public class UserList extends AppCompatActivity {
 
         Toolbar usersToolbar = findViewById(R.id.UserListToolbar);
         setSupportActionBar(usersToolbar);
-        getSupportActionBar().setTitle("Users List");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("");
 
         usersDatabase = FirebaseFirestore.getInstance();
 
@@ -42,12 +54,32 @@ public class UserList extends AppCompatActivity {
         usersListPage.setLayoutManager(new LinearLayoutManager(this));
 
         userListImg = (CircleImageView) findViewById(R.id.userListImg);
+        searchButton = (FloatingActionButton) findViewById(R.id.searchButton);
+
+        ad = new GoogleAd(this);
+        ad.loadInterstitial();
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, usersToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EditText searchText = (EditText) findViewById(R.id.searchText);
+                searchUsers(searchText.getText().toString());
+            }
+        });
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(usersDatabase.collection("Users"), User.class).build();
+    protected void searchUsers(String name) {
+        Query query = usersDatabase.collection("Users");
+        FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query.orderBy("name").startAt(name).endAt(name + "~"), User.class).build();
         FirestoreRecyclerAdapter<User, UsersViewHolder> adapter = new FirestoreRecyclerAdapter<User, UsersViewHolder>(options) {
             @Override
             public UsersViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
@@ -77,6 +109,68 @@ public class UserList extends AppCompatActivity {
         usersListPage.setAdapter(adapter);
         adapter.startListening();
     }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        try {
+            if (drawer.isDrawerOpen(GravityCompat.START)) {
+                drawer.closeDrawer(GravityCompat.START);
+            } else {
+                super.onBackPressed();
+            }
+        }
+        catch (Exception e){
+            //startActivity(lastIntent);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.chat, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+
+        if (item.getItemId() == R.id.action_logout){
+            FirebaseAuth.getInstance().signOut();
+            Intent loginSplash = new Intent(this, Login.class);
+            startActivity(loginSplash);
+        }
+        if (item.getItemId() == R.id.action_accounts){
+            ad.showInterstitial();
+        }
+
+        return true;
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_chat) {
+            Intent intent = new Intent (this, Chat.class);
+            startActivity(intent);
+        }
+        if (id == R.id.nav_friends){
+            onBackPressed();
+        }
+        if (id == R.id.nav_search_users){
+            startActivity(new Intent(this, UserList.class));
+        }
+        if (id == R.id.nav_requests){
+            startActivity(new Intent(this, FriendRequestList.class));
+        }
+
+        return true;
+    }
+
     public static class UsersViewHolder extends RecyclerView.ViewHolder{
 
         View mView;

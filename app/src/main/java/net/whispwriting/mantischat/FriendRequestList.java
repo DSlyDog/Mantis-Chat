@@ -51,6 +51,7 @@ public class FriendRequestList extends AppCompatActivity implements NavigationVi
     private FirebaseUser user;
     private List<String> friends;
     private Query query;
+    private GoogleAd ad;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +70,9 @@ public class FriendRequestList extends AppCompatActivity implements NavigationVi
         userListImg = (CircleImageView) findViewById(R.id.userListImg);
 
         query = usersDatabase.collection("Users");
+
+        ad = new GoogleAd(this);
+        ad.loadInterstitial();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -282,12 +286,7 @@ public class FriendRequestList extends AppCompatActivity implements NavigationVi
             startActivity(loginSplash);
         }
         if (item.getItemId() == R.id.action_accounts){
-            Intent accountSettings = new Intent(this, AccountSettings.class);
-            startActivity(accountSettings);
-        }
-        if (item.getItemId() == R.id.action_usersList){
-            Intent userList = new Intent(this, UserList.class);
-            startActivity(userList);
+            ad.showInterstitial();
         }
 
         return true;
@@ -308,9 +307,6 @@ public class FriendRequestList extends AppCompatActivity implements NavigationVi
         }
         if (id == R.id.nav_search_users){
             startActivity(new Intent(this, UserList.class));
-        }
-        if (id == R.id.nav_account_settings){
-            startActivity(new Intent(this, AccountSettings.class));
         }
         if (id == R.id.nav_requests){
             onBackPressed();

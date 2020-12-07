@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,9 +26,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
@@ -67,6 +63,7 @@ public class Chat extends AppCompatActivity
     private FirebaseFirestore usersDatabase;
     private Query query;
     private String currentUserName, currentUserImage;
+    private GoogleAd ad;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,8 +88,8 @@ public class Chat extends AppCompatActivity
         usersListPage.setHasFixedSize(true);
         usersListPage.setLayoutManager(new LinearLayoutManager(this));
 
-        mInterstitialAd = newInterstitialAd();
-        loadInterstitial();
+        ad = new GoogleAd(this);
+        ad.loadInterstitial();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -222,70 +219,10 @@ public class Chat extends AppCompatActivity
             startActivity(loginSplash);
         }
         if (item.getItemId() == R.id.action_accounts){
-            Intent accountSettings = new Intent(this, AccountSettings.class);
-            startActivity(accountSettings);
-        }
-        if (item.getItemId() == R.id.action_usersList){
-            Intent userList = new Intent(this, UserList.class);
-            startActivity(userList);
+            ad.showInterstitial();
         }
 
         return true;
-    }
-
-
-    private InterstitialAd mInterstitialAd;
-
-
-    private InterstitialAd newInterstitialAd() {
-        InterstitialAd interstitialAd = new InterstitialAd(this);
-        interstitialAd.setAdUnitId(getString(R.string.interstitial_ad_unit_id));
-        interstitialAd.setAdListener(new AdListener() {
-            @Override
-            public void onAdLoaded() {
-            }
-
-
-            @Override
-            public void onAdClosed() {
-                // Proceed to the next level.
-                Log.w( "MA", "MA: inside onAdClosed" );
-                goToNextLevel();
-            }
-        });
-        return interstitialAd;
-    }
-
-
-
-
-    private void showInterstitial() {
-        // Show the ad if it"s ready. Otherwise toast and reload the ad.
-        if (mInterstitialAd != null && mInterstitialAd.isLoaded()) {
-            mInterstitialAd.show();
-        } else {
-            Toast.makeText(this, "Ad did not load", Toast.LENGTH_SHORT).show();
-            goToNextLevel();
-        }
-    }
-
-
-
-
-    private void loadInterstitial() {
-        // Disable the next level button and load the ad.
-        AdRequest adRequest = new AdRequest.Builder()
-                .setRequestAgent("android_studio:ad_template").build();
-        mInterstitialAd.loadAd(adRequest);
-    }
-
-
-    private void goToNextLevel() {
-        // Show the next level and reload the ad to prepare for the level after.
-        mInterstitialAd = newInterstitialAd();
-        loadInterstitial();
-
-        startActivity(new Intent(this, AccountSettings.class));
     }
 
 
@@ -303,9 +240,6 @@ public class Chat extends AppCompatActivity
         }
         if (id == R.id.nav_search_users){
             startActivity(new Intent(this, UserList.class));
-        }
-        if (id == R.id.nav_account_settings){ // Put ad code here
-            showInterstitial();
         }
         if (id == R.id.nav_requests){
             startActivity(new Intent(this, FriendRequestList.class));

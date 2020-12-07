@@ -47,4 +47,5 @@
     <string name="interstitial_ad_sample">interstitial_ad_sample</string>
     <string name="messageBox">Message</string>
     <string name="defaultMessageText">message</string>
+    <string name="searchBar">Search</string>
 </resources>

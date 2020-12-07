@@ -50,6 +50,7 @@ public class FriendsList extends AppCompatActivity implements NavigationView.OnN
     private List<String> friends;
     private Query query;
     private String currentUserName, currentUserImage;
+    private GoogleAd ad;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +67,8 @@ public class FriendsList extends AppCompatActivity implements NavigationView.OnN
         usersListPage.setHasFixedSize(true);
         usersListPage.setLayoutManager(new LinearLayoutManager(this));
         userListImg = (CircleImageView) findViewById(R.id.userListImg);
+        ad = new GoogleAd(this);
+        ad.loadInterstitial();
 
         query = usersDatabase.collection("Users");
 
@@ -213,12 +216,7 @@ public class FriendsList extends AppCompatActivity implements NavigationView.OnN
             startActivity(loginSplash);
         }
         if (item.getItemId() == R.id.action_accounts){
-            Intent accountSettings = new Intent(this, AccountSettings.class);
-            startActivity(accountSettings);
-        }
-        if (item.getItemId() == R.id.action_usersList){
-            Intent userList = new Intent(this, UserList.class);
-            startActivity(userList);
+            ad.showInterstitial();
         }
 
         return true;
@@ -239,9 +237,6 @@ public class FriendsList extends AppCompatActivity implements NavigationView.OnN
         }
         if (id == R.id.nav_search_users){
             startActivity(new Intent(this, UserList.class));
-        }
-        if (id == R.id.nav_account_settings){
-            startActivity(new Intent(this, AccountSettings.class));
         }
         if (id == R.id.nav_requests){
             startActivity(new Intent(this, FriendRequestList.class));
