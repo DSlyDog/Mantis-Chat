@@ -139,7 +139,7 @@ public class Search extends AppCompatActivity implements NavigationView.OnNaviga
 
         if (item.getItemId() == R.id.action_logout){
             FirebaseAuth.getInstance().signOut();
-            Intent loginSplash = new Intent(this, Login.class);
+            Intent loginSplash = new Intent(this, Welcome.class);
             startActivity(loginSplash);
         }
         if (item.getItemId() == R.id.action_accounts){

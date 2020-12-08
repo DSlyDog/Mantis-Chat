@@ -8,7 +8,7 @@
     <string name="action_settings">App Settings</string>
     <string name="main_desc">Welcome to the WhispWriting app. This suite is basically a mobile adaptation of the site that may work better than the actual mobile page.</string>
     <string name="lebutton">Standard Button</string>
-    <string name="login_pg">Welcome to the Chat Page. Please login or register.</string>
+    <string name="welcome_text">Welcome to Mantis Chat. Please login or register.</string>
     <string name="chat_main">Welcome to the chat page.</string>
     <string name="register">Create an Account</string>
     <string name="login">Returning Users</string>
