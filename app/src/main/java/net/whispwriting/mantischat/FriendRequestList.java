@@ -95,7 +95,7 @@ public class FriendRequestList extends AppCompatActivity implements NavigationVi
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         friends = (ArrayList<String>) document.get("requests");
-                        if (friends.size() > 0) {
+                        if (friends != null && friends.size() > 0) {
                             FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>().setQuery(query.whereIn("user_id", friends), User.class).build();
                             FirestoreRecyclerAdapter<User, UsersViewHolder> adapter = new FirestoreRecyclerAdapter<User, UsersViewHolder>(options) {
                                 @Override
