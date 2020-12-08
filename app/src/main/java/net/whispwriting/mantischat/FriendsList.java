@@ -64,9 +64,12 @@ public class FriendsList extends AppCompatActivity implements NavigationView.OnN
         usersDatabase = FirebaseFirestore.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
         usersListPage = (RecyclerView) findViewById(R.id.FriendListPage);
+        userListImg = (CircleImageView) findViewById(R.id.userListImg);
+
         usersListPage.setHasFixedSize(true);
         usersListPage.setLayoutManager(new LinearLayoutManager(this));
-        userListImg = (CircleImageView) findViewById(R.id.userListImg);
+        usersListPage.getRecycledViewPool().setMaxRecycledViews(0, 0);
+
         ad = new GoogleAd(this);
         ad.loadInterstitial();
 
@@ -236,7 +239,7 @@ public class FriendsList extends AppCompatActivity implements NavigationView.OnN
             onBackPressed();
         }
         if (id == R.id.nav_search_users){
-            startActivity(new Intent(this, UserList.class));
+            startActivity(new Intent(this, Search.class));
         }
         if (id == R.id.nav_requests){
             startActivity(new Intent(this, FriendRequestList.class));

@@ -306,7 +306,7 @@ public class FriendRequestList extends AppCompatActivity implements NavigationVi
             startActivity(new Intent(this, FriendsList.class));
         }
         if (id == R.id.nav_search_users){
-            startActivity(new Intent(this, UserList.class));
+            startActivity(new Intent(this, Search.class));
         }
         if (id == R.id.nav_requests){
             onBackPressed();

@@ -26,7 +26,7 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder>{
+public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
 
     private List<Message> messageList;
     private FirebaseUser currentUser;
@@ -63,7 +63,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                     public void onClick(View view) {
                         Uri uri =  Uri.parse(message.getMessage());
                         Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
-                        String mime = "*/*";
+                        String mime = "%/*";
                         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
                         if (mimeTypeMap.hasExtension(
                                 mimeTypeMap.getFileExtensionFromUrl(uri.toString())))
@@ -103,7 +103,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                     public void onClick(View view) {
                         Uri uri =  Uri.parse(message.getMessage());
                         Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
-                        String mime = "*/*";
+                        String mime = "%/*";
                         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
                         if (mimeTypeMap.hasExtension(
                                 mimeTypeMap.getFileExtensionFromUrl(uri.toString())))

@@ -87,6 +87,7 @@ public class Chat extends AppCompatActivity
         usersListPage = (RecyclerView) findViewById(R.id.chat_recycler);
         usersListPage.setHasFixedSize(true);
         usersListPage.setLayoutManager(new LinearLayoutManager(this));
+        usersListPage.getRecycledViewPool().setMaxRecycledViews(0, 0);
 
         ad = new GoogleAd(this);
         ad.loadInterstitial();
@@ -239,7 +240,7 @@ public class Chat extends AppCompatActivity
             startActivity(new Intent(this, FriendsList.class));
         }
         if (id == R.id.nav_search_users){
-            startActivity(new Intent(this, UserList.class));
+            startActivity(new Intent(this, Search.class));
         }
         if (id == R.id.nav_requests){
             startActivity(new Intent(this, FriendRequestList.class));

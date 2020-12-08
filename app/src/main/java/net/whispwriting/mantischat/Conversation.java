@@ -76,6 +76,7 @@ public class Conversation extends AppCompatActivity {
 
         messagesView.setHasFixedSize(true);
         messagesView.setLayoutManager(linearLayoutManager);
+        messagesView.getRecycledViewPool().setMaxRecycledViews(0,0);
         messagesView.setAdapter(messageAdapter);
 
         userID = getIntent().getStringExtra("userID");
@@ -187,7 +188,12 @@ public class Conversation extends AppCompatActivity {
                 Message message = snapshot.getValue(Message.class);
                 messageList.add(message);
                 messageAdapter.notifyDataSetChanged();
-                //messageAdapter.notifyItemInserted(messageList.size()-1);
+                messagesView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        messagesView.scrollToPosition(messageAdapter.getItemCount() - 1);
+                    }
+                });
             }
 
             @Override

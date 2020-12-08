@@ -30,7 +30,7 @@ import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class UserList extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class Search extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     private RecyclerView usersListPage;
     private FirebaseFirestore usersDatabase;
@@ -52,6 +52,7 @@ public class UserList extends AppCompatActivity implements NavigationView.OnNavi
         usersListPage = (RecyclerView) findViewById(R.id.UserListPage);
         usersListPage.setHasFixedSize(true);
         usersListPage.setLayoutManager(new LinearLayoutManager(this));
+        usersListPage.getRecycledViewPool().setMaxRecycledViews(0, 0);
 
         userListImg = (CircleImageView) findViewById(R.id.userListImg);
         searchButton = (FloatingActionButton) findViewById(R.id.searchButton);
@@ -98,7 +99,7 @@ public class UserList extends AppCompatActivity implements NavigationView.OnNavi
                 usersViewHolder.mView.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View view){
-                        Intent profilePage = new Intent(UserList.this, ProfileActivity.class);
+                        Intent profilePage = new Intent(Search.this, ProfileActivity.class);
                         profilePage.putExtra("userID", userID);
                         startActivity(profilePage);
                     }
@@ -162,7 +163,7 @@ public class UserList extends AppCompatActivity implements NavigationView.OnNavi
             onBackPressed();
         }
         if (id == R.id.nav_search_users){
-            startActivity(new Intent(this, UserList.class));
+            startActivity(new Intent(this, Search.class));
         }
         if (id == R.id.nav_requests){
             startActivity(new Intent(this, FriendRequestList.class));
