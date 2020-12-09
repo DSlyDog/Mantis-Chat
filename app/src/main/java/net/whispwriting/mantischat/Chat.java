@@ -101,10 +101,11 @@ public class Chat extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        start();
+        //start();
     }
 
-    protected void start() {
+    @Override
+    protected void onStart() {
         super.onStart();
         DocumentReference ref = FirebaseFirestore.getInstance().collection("Users").document(user.getUid());
         ref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
