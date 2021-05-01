@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,7 +23,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -38,8 +36,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.squareup.picasso.Picasso;
 
@@ -64,6 +65,7 @@ public class Chat extends AppCompatActivity
     private Query query;
     private String currentUserName, currentUserImage;
     private GoogleAd ad;
+    private ChatAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,51 +113,39 @@ public class Chat extends AppCompatActivity
         ref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()){
+                if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         currentUserName = document.getString("name");
                         currentUserImage = document.getString("image");
-                        conversations = (ArrayList<String>) document.get("conversations");
-                        if (conversations != null && conversations.size() > 0) {
-                            FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
-                                    .setQuery(query.whereIn("user_id", conversations).orderBy("timestamp", Query.Direction.DESCENDING), User.class).build();
-                            FirestoreRecyclerAdapter<User, Chat.UsersViewHolder> adapter = new FirestoreRecyclerAdapter<User, Chat.UsersViewHolder>(options) {
-                                @Override
-                                public Chat.UsersViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                                    View view = LayoutInflater.from(parent.getContext())
-                                            .inflate(R.layout.single_user_layout, parent, false);
-                                    return new Chat.UsersViewHolder(view);
-                                }
-
-                                @Override
-                                protected void onBindViewHolder(@NonNull Chat.UsersViewHolder usersViewHolder, int i, @NonNull final User users) {
-                                    final String userID = getSnapshots().getSnapshot(i).getId();
-                                    usersViewHolder.setName(users.name);
-                                    usersViewHolder.setLastMessage(user.getUid(), userID);
-                                    usersViewHolder.setImg(users.image);
-
-                                    usersViewHolder.mView.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            Intent conversationIntent = new Intent(Chat.this, Conversation.class);
-                                            conversationIntent.putExtra("userID", userID);
-                                            conversationIntent.putExtra("name", users.name);
-                                            conversationIntent.putExtra("image", users.image);
-                                            updateConversationsStack(user.getUid(), userID, users.name, users.image);
-                                            updateConversationsStack(userID, user.getUid(), currentUserName, currentUserImage);
-                                            startActivity(conversationIntent);
-                                        }
-                                    });
-                                }
-                            };
-                            usersListPage.setAdapter(adapter);
-                            adapter.startListening();
-                        }
+                        FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
+                                .setQuery(query.orderBy("timestamp", Query.Direction.DESCENDING), User.class).build();
+                        adapter = new ChatAdapter(options, user, Chat.this, currentUserName, currentUserImage, conversations);
+                        loadNewConversations();
+                        usersListPage.setAdapter(adapter);
+                        adapter.startListening();
                     }
                 }
             }
         });
+    }
+
+    private void loadNewConversations(){
+        Log.w("SnapshotListener", "loadNewConversations method called");
+        usersDatabase.collection("Conversations").document(user.getUid()).collection("recipients")
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        try {
+                            Log.w("SnapshotListener", "SnapshotListener event triggered");
+                            System.err.println("SnapshotListener fired");
+                            User user = value.getDocuments().get(0).toObject(User.class);
+                            adapter.notifyDataSetChanged();
+                        }catch(IndexOutOfBoundsException e){
+                            Log.w("SnapshotListener", "Index out of bounds");
+                        }
+                    }
+                });
     }
 
     private void updateConversationsStack(final String userID, final String otherUserID, String otherUserName, String otherUserImage){
