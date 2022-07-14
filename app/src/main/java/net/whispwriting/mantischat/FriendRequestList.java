@@ -71,9 +71,6 @@ public class FriendRequestList extends AppCompatActivity implements NavigationVi
 
         query = usersDatabase.collection("Users");
 
-        ad = new GoogleAd(this);
-        ad.loadInterstitial();
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, usersToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -286,7 +283,8 @@ public class FriendRequestList extends AppCompatActivity implements NavigationVi
             startActivity(loginSplash);
         }
         if (item.getItemId() == R.id.action_accounts){
-            ad.showInterstitial();
+            Intent accountSettings = new Intent(this, AccountSettings.class);
+            startActivity(accountSettings);
         }
 
         return true;

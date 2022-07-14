@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:maxHeight="400dp"
+    android:adjustViewBounds="true"
     android:padding="15dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -11,7 +13,10 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="0dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:src="@drawable/avatar" />
 
     <TextView
@@ -19,51 +24,60 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/profile_image_message"
-        android:layout_marginStart="14dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
         android:layout_toEndOf="@id/profile_image_message"
         android:background="@drawable/message_background"
         android:padding="15dp"
         android:paddingTop="6dp"
         android:paddingBottom="6dp"
         android:text="TextView"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        app:layout_constraintStart_toEndOf="@+id/profile_image_message"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/sentMessageText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="0dp"
+        android:layout_marginTop="4dp"
+        android:layout_toEndOf="@+id/profile_image_message"
         android:background="@drawable/current_message_background"
-        android:textColor="@android:color/white"
+        android:maxWidth="100dp"
         android:padding="15dp"
         android:paddingTop="6dp"
         android:paddingBottom="6dp"
         android:text="TextView"
-        android:textSize="14sp" />
+        android:textColor="@android:color/white"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.994"
+        app:layout_constraintStart_toEndOf="@+id/profile_image_message"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/receivedImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/messageText"
-        android:layout_marginStart="14dp"
-        android:layout_toEndOf="@id/profile_image_message"
         android:layout_alignEnd="@id/messageText"
-        android:maxHeight="50dp"
+        android:layout_toEndOf="@id/profile_image_message"
+        android:contentDescription="@string/received_image"
         android:maxWidth="50dp"
-        android:scaleType="centerCrop" />
+        android:scaleType="fitCenter"
+        app:layout_constraintStart_toEndOf="@+id/profile_image_message"
+        app:layout_constraintTop_toBottomOf="@+id/messageText" />
 
     <ImageView
         android:id="@+id/sentImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/sentMessageText"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="0dp"
         android:layout_alignStart="@id/sentMessageText"
-        android:maxHeight="50dp"
+        android:contentDescription="@string/sent_image"
         android:maxWidth="50dp"
-        android:scaleType="centerCrop" />
+        android:maxHeight="50dp"
+        app:layout_constraintEnd_toEndOf="@+id/sentMessageText"
+        app:layout_constraintTop_toBottomOf="@+id/sentMessageText" />
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

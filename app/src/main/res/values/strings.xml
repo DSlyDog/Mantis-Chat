@@ -48,4 +48,6 @@
     <string name="messageBox">Message</string>
     <string name="defaultMessageText">message</string>
     <string name="searchBar">Search</string>
+    <string name="received_image">received image</string>
+    <string name="sent_image">sent image</string>
 </resources>

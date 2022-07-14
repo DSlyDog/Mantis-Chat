@@ -91,9 +91,6 @@ public class Chat extends AppCompatActivity
         usersListPage.setLayoutManager(new LinearLayoutManager(this));
         usersListPage.getRecycledViewPool().setMaxRecycledViews(0, 0);
 
-        ad = new GoogleAd(this);
-        ad.loadInterstitial();
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar1, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -109,25 +106,29 @@ public class Chat extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        DocumentReference ref = FirebaseFirestore.getInstance().collection("Users").document(user.getUid());
-        ref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        currentUserName = document.getString("name");
-                        currentUserImage = document.getString("image");
-                        FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
-                                .setQuery(query.orderBy("timestamp", Query.Direction.DESCENDING), User.class).build();
-                        adapter = new ChatAdapter(options, user, Chat.this, currentUserName, currentUserImage, conversations);
-                        loadNewConversations();
-                        usersListPage.setAdapter(adapter);
-                        adapter.startListening();
+        try {
+            DocumentReference ref = FirebaseFirestore.getInstance().collection("Users").document(user.getUid());
+            ref.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            currentUserName = document.getString("name");
+                            currentUserImage = document.getString("image");
+                            FirestoreRecyclerOptions<User> options = new FirestoreRecyclerOptions.Builder<User>()
+                                    .setQuery(query.orderBy("timestamp", Query.Direction.DESCENDING), User.class).build();
+                            adapter = new ChatAdapter(options, user, Chat.this, currentUserName, currentUserImage, conversations);
+                            loadNewConversations();
+                            usersListPage.setAdapter(adapter);
+                            adapter.startListening();
+                        }
                     }
                 }
-            }
-        });
+            });
+        }catch(NullPointerException e){
+            e.printStackTrace();
+        }
     }
 
     private void loadNewConversations(){
@@ -211,7 +212,8 @@ public class Chat extends AppCompatActivity
             startActivity(loginSplash);
         }
         if (item.getItemId() == R.id.action_accounts){
-            ad.showInterstitial();
+            Intent accountSettings = new Intent(this, AccountSettings.class);
+            startActivity(accountSettings);
         }
 
         return true;

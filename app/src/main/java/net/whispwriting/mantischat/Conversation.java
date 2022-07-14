@@ -1,6 +1,7 @@
 package net.whispwriting.mantischat;
 
 import android.content.Intent;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -72,7 +73,10 @@ public class Conversation extends AppCompatActivity {
         linearLayoutManager = new LinearLayoutManager(this);
         messagesView = (RecyclerView) findViewById(R.id.conversation_recycler);
 
-        messageAdapter = new MessageAdapter(messageList, this, messagesView);
+        Point point = new Point();
+        getWindowManager().getDefaultDisplay().getSize(point);
+
+        messageAdapter = new MessageAdapter(messageList, this, messagesView, point.x, point.y);
 
         messagesView.setHasFixedSize(true);
         messagesView.setLayoutManager(linearLayoutManager);
@@ -191,6 +195,11 @@ public class Conversation extends AppCompatActivity {
                 messagesView.post(new Runnable() {
                     @Override
                     public void run() {
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         messagesView.scrollToPosition(messageAdapter.getItemCount() - 1);
                     }
                 });

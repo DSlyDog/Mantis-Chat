@@ -5,9 +5,13 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <application
-        android:name="net.whispwriting.mantischat.MantisChat"
+        android:name=".MantisChat"
         android:allowBackup="true"
         android:icon="@mipmap/icon"
         android:label="@string/app_name"
@@ -15,13 +19,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning">
+
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713"/>
+            android:value="ca-app-pub-3940256099942544~3347511713" />
+
         <activity
-            android:name="net.whispwriting.mantischat.Conversation"
+            android:name=".Conversation"
             android:label="Conversation"
-            android:parentActivityName="net.whispwriting.mantischat.Chat">
+            android:parentActivityName=".Chat">
             <intent-filter>
                 <action android:name="net.whispwriting_CONVERSATIONACTIVITYY" />
 
@@ -29,9 +35,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="net.whispwriting.mantischat.ProfileActivity"
+            android:name=".ProfileActivity"
             android:label="WhispWriting"
-            android:parentActivityName="net.whispwriting.mantischat.Search">
+            android:parentActivityName=".Search">
             <intent-filter>
                 <action android:name="net.whispwriting_TARGET_NOTIFICATION" />
 
@@ -39,9 +45,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="net.whispwriting.mantischat.Search"
+            android:name=".Search"
             android:label="WhispWriting"
-            android:parentActivityName="net.whispwriting.mantischat.Chat"
+            android:parentActivityName=".Chat"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.USERLIST" />
@@ -50,9 +56,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="net.whispwriting.mantischat.UsernameUpdate"
+            android:name=".UsernameUpdate"
             android:label="@string/app_name"
-            android:parentActivityName="net.whispwriting.mantischat.AccountSettings"
+            android:parentActivityName=".AccountSettings"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.USERNAMEUPDATE" />
@@ -61,9 +67,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="net.whispwriting.mantischat.StatusUpdate"
+            android:name=".StatusUpdate"
             android:label="@string/app_name"
-            android:parentActivityName="net.whispwriting.mantischat.AccountSettings"
+            android:parentActivityName=".AccountSettings"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.STATUSUPDATE" />
@@ -72,7 +78,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="net.whispwriting.mantischat.Chat"
+            android:name=".Chat"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -82,7 +88,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="net.whispwriting.mantischat.Welcome"
+            android:name=".Welcome"
             android:label="Login"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -92,9 +98,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="net.whispwriting.mantischat.Registration"
+            android:name=".Registration"
             android:label="Create Account"
-            android:parentActivityName="net.whispwriting.mantischat.Welcome"
+            android:parentActivityName=".Welcome"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.REGISTRATION" />
@@ -103,9 +109,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="net.whispwriting.mantischat.Login"
+            android:name=".Login"
             android:label="@string/app_name"
-            android:parentActivityName="net.whispwriting.mantischat.Welcome"
+            android:parentActivityName=".Welcome"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.LOGGINGIN" />
@@ -114,9 +120,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="net.whispwriting.mantischat.AccountSettings"
+            android:name=".AccountSettings"
             android:label="WhispWriting"
-            android:parentActivityName="net.whispwriting.mantischat.Chat"
+            android:parentActivityName=".Chat"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.ACCOUNTSETTINGS" />
@@ -125,9 +131,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="net.whispwriting.mantischat.FriendsList"
+            android:name=".FriendsList"
             android:label="WhispWriting"
-            android:parentActivityName="net.whispwriting.mantischat.Chat"
+            android:parentActivityName=".Chat"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.FRIENDSFRAGMENT" />
@@ -136,9 +142,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="net.whispwriting.mantischat.FriendRequestList"
+            android:name=".FriendRequestList"
             android:label="WhispWriting"
-            android:parentActivityName="net.whispwriting.mantischat.Chat"
+            android:parentActivityName=".Chat"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.FRIENDSFRAGMENT" />
@@ -153,12 +159,6 @@
             android:name="com.google.android.gms.ads.AdActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:theme="@android:style/Theme.Translucent" />
-
-
     </application>
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
 </manifest>

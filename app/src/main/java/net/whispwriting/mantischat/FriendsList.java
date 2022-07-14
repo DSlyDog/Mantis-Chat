@@ -70,9 +70,6 @@ public class FriendsList extends AppCompatActivity implements NavigationView.OnN
         usersListPage.setLayoutManager(new LinearLayoutManager(this));
         usersListPage.getRecycledViewPool().setMaxRecycledViews(0, 0);
 
-        ad = new GoogleAd(this);
-        ad.loadInterstitial();
-
         query = usersDatabase.collection("Users");
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -219,7 +216,8 @@ public class FriendsList extends AppCompatActivity implements NavigationView.OnN
             startActivity(loginSplash);
         }
         if (item.getItemId() == R.id.action_accounts){
-            ad.showInterstitial();
+            Intent accountSettings = new Intent(this, AccountSettings.class);
+            startActivity(accountSettings);
         }
 
         return true;
