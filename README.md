@@ -1,2 +1,2 @@
 ## Mantis-Chat
-CS489 Android Programming Group Project
+A one-to-one text messaging app
